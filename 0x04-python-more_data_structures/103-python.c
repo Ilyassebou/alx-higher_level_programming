@@ -1,8 +1,14 @@
 #include <Python.h>
-#include <stdio.h>
+#include <object.h>
+#include <listobject.h>
+#include <bytesobject.h>
 
 void print_python_bytes(PyObject *bytes_obj)
 {
+    long int size;
+    int i;
+    char *trying_str = NULL;
+
     printf("[.] bytes object info\n");
     if (!PyBytes_Check(bytes_obj))
     {
@@ -10,62 +16,40 @@ void print_python_bytes(PyObject *bytes_obj)
         return;
     }
 
-    Py_ssize_t size = PyBytes_Size(bytes_obj);
-    printf("  size: %ld\n", size);
+    PyBytes_AsStringAndSize(bytes_obj, &trying_str, &size);
 
-    char *string_repr = PyBytes_AsString(bytes_obj);
-    printf("  trying string: %s\n", string_repr);
-
-    printf("  first 10 bytes: ");
-    for (Py_ssize_t i = 0; i < size && i < 10; i++)
-    {
-        printf("%02x ", (unsigned char)string_repr[i]);
-    }
+    printf("  size: %li\n", size);
+    printf("  trying string: %s\n", trying_str);
+    if (size < 10)
+        printf("  first %li bytes:", size + 1);
+    else
+        printf("  first 10 bytes:");
+    for (i = 0; i <= size && i < 10; i++)
+        printf(" %02hhx", trying_str[i]);
     printf("\n");
 }
 
 void print_python_list(PyObject *list_obj)
 {
-    printf("[*] Python list info\n");
+    Py_ssize_t size = 0;
+    PyObject *item;
+    int i = 0;
 
-    Py_ssize_t size = PyList_Size(list_obj);
-    Py_ssize_t allocated = ((PyListObject *)list_obj)->allocated;
-
-    printf("[*] Size of the Python List = %ld\n", size);
-    printf("[*] Allocated = %ld\n", allocated);
-
-    for (Py_ssize_t i = 0; i < size; i++)
+    if (PyList_CheckExact(list_obj))
     {
-        PyObject *element = PyList_GetItem(list_obj, i);
-        printf("Element %ld: ", i);
+        size = PyList_Size(list_obj);
 
-        if (PyBytes_Check(element))
+        printf("[*] Python list info\n");
+        printf("[*] Size of the Python List = %zd\n", size);
+        printf("[*] Allocated = %lu\n", ((PyListObject *)list_obj)->allocated);
+
+        while (i < size)
         {
-            print_python_bytes(element);
-        }
-        else if (PyFloat_Check(element))
-        {
-            printf("float\n");
-        }
-        else if (PyTuple_Check(element))
-        {
-            printf("tuple\n");
-        }
-        else if (PyList_Check(element))
-        {
-            printf("list\n");
-        }
-        else if (PyLong_Check(element))
-        {
-            printf("int\n");
-        }
-        else if (PyUnicode_Check(element))
-        {
-            printf("str\n");
-        }
-        else
-        {
-            printf("[ERROR] Unsupported type\n");
+            item = PyList_GET_ITEM(list_obj, i);
+            printf("Element %d: %s\n", i, item->ob_type->tp_name);
+            if (PyBytes_Check(item))
+                print_python_bytes(item);
+            i++;
         }
     }
 }
