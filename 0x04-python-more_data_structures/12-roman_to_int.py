@@ -1,24 +1,14 @@
 #!/usr/bin/python3
-
 def roman_to_int(roman_string):
-    if not isinstance(roman_string, str) or not roman_string:
-        return 0
-
-    roman_dict = {'I': 1, 'V': 5, 'X': 10, 'L': 50,
-                  'C': 100, 'D': 500, 'M': 1000}
-
+    numeral_values = {'I': 1, 'V': 5, 'X': 10, 'L': 50, 'C': 100, 'D': 500, 'M': 1000}
     total_value = 0
-    prev_numeral_value = 0
+    previous_value = 0
 
-    for numeral in reversed(roman_string):
-        current_numeral_value = roman_dict[numeral]
-
-        if current_numeral_value >= prev_numeral_value:
-            total_value += current_numeral_value
-        else:
-            total_value -= current_numeral_value
-
-        prev_numeral_value = current_numeral_value
-
+    if type(roman_string) is str and roman_string:
+        for index in range(len(roman_string) - 1, -1, -1):
+            if numeral_values[roman_string[index]] >= previous_value:
+                total_value += numeral_values[roman_string[index]]
+            else:
+                total_value -= numeral_values[roman_string[index]]
+            previous_value = numeral_values[roman_string[index]]
     return total_value
-
