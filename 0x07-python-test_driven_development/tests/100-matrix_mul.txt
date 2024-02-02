@@ -1,3 +1,5 @@
+# run test with python3 -m doctest -v ./tests/100-matrix_mul.txt
+
 First import method to test
 >>> matrix_mul = __import__('100-matrix_mul').matrix_mul
 
