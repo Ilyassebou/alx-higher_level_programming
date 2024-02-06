@@ -2,11 +2,8 @@
 """Module containing add_attribute method"""
 
 
-def add_attribute(obj, name, value):
-    """Method checking if attribute can be set and sets
-    where possible"""
-    try:
-        setattr(obj, name, value)
-    except AttributeError:
+def add_attribute(obj, att, value):
+    """Add a new attribute to an object if possible"""
+    if not hasattr(obj, "__dict__"):
         raise TypeError("can't add new attribute")
-
+    setattr(obj, att, value)
