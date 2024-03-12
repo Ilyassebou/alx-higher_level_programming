@@ -1,4 +1,6 @@
--- Converts the entire database hbtn_0c_0 to UTF8.
+-- Converts hbtn_0c_0 database to utf8
+-- Table: first_table to utf8
+-- Field: name to utf8
 
 ALTER DATABASE htbn_0c_0 CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
