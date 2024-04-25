@@ -1,28 +1,22 @@
 #!/usr/bin/python3
-"""This is the peak module."""
-
+""" Finds Peak values """
 
 def find_peak(list_of_integers):
-    """Finds a peak in a list of unsorted integers.
-
-    Args:
-        list_of_integers (list): the list of integers to find the peak in.
-    """
-
-    if list_of_integers == []:
+    """Find the peak"""
+    if not list_of_integers:
         return None
+    peak = binary_search(list_of_integers)
+    return list_of_integers[peak]
 
-    length = len(list_of_integers)
-    if length == 1:
-        return list_of_integers[0]
-    if length == 2:
-        return max(list_of_integers)
+""" binary search algorithm """
 
-    half = int(length / 2)
-    peak = list_of_integers[half]
-    if peak > list_of_integers[half - 1] and peak > list_of_integers[half + 1]:
-        return peak
-    elif peak > list_of_integers[half + 1]:
-        return find_peak(list_of_integers[:half])
-    else:
-        return find_peak(list_of_integers[half + 1:])
+def binary_search(a):
+    """Iterative binary search of the peak"""
+    lo, hi = 0, len(a) - 1
+    while lo < hi:
+        mid = (hi - lo) // 2 + lo
+        if a[mid] > a[mid + 1]:
+            hi = mid
+        else:
+            lo = mid + 1
+    return lo
